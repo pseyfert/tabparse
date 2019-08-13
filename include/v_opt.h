@@ -1,11 +1,9 @@
 #pragma once
-
 #include <string>
 #include <vector>
 #include <string_view>
-class Parser;
 
-// class ArgIter;
+class Parser;
 using ArgIter = decltype(std::declval<std::vector<std::string>>().begin());
 
 class ArgBase {
