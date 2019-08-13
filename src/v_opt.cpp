@@ -17,44 +17,44 @@ ArgIter SwitchArg::parse(ArgIter iter) {
   return iter;
 }
 
-std::string IntArg::completion_entry() {
+std::string IntArg::completion_entry(bool skip_description) {
   std::string retval;
   retval += m_name;
-  retval += "[" + m_doc + "]";
+  if (!skip_description) retval += "[" + m_doc + "]";
   retval += ":" + m_shortdoc + ":";
   return retval;
 }
 
-std::string FileArg::completion_entry() {
+std::string FileArg::completion_entry(bool skip_description) {
   std::string retval;
   retval += m_name;
-  retval += "[" + m_doc + "]";
+  if (!skip_description) retval += "[" + m_doc + "]";
   retval += ":" + m_shortdoc + ":";
   retval += " _files -g '" + m_pattern + "'";
   return retval;
 }
 
-std::string DirectoryArg::completion_entry() {
+std::string DirectoryArg::completion_entry(bool skip_description) {
   std::string retval;
   retval += m_name;
-  retval += "[" + m_doc + "]";
+  if (!skip_description) retval += "[" + m_doc + "]";
   retval += ":" + m_shortdoc + ":";
   retval += " _files -/";
   return retval;
 }
 
-std::string StringArg::completion_entry() {
+std::string StringArg::completion_entry(bool skip_description) {
   std::string retval;
   retval += m_name;
-  retval += "[" + m_doc + "]";
+  if (!skip_description) retval += "[" + m_doc + "]";
   retval += ":" + m_shortdoc + ":";
   return retval;
 }
 
-std::string StringChoiceArg::completion_entry() {
+std::string StringChoiceArg::completion_entry(bool skip_description) {
   std::string retval;
   retval += m_name;
-  retval += "[" + m_doc + "]";
+  if (!skip_description) retval += "[" + m_doc + "]";
   retval += ":" + m_shortdoc + ":";
   if (m_descriptions.empty()) {
     retval += "(";
@@ -73,10 +73,10 @@ std::string StringChoiceArg::completion_entry() {
   return retval;
 }
 
-std::string SwitchArg::completion_entry() {
+std::string SwitchArg::completion_entry(bool skip_description) {
   std::string retval;
   retval += m_name;
-  retval += "[" + m_doc + "]";
+  if (!skip_description) retval += "[" + m_doc + "]";
   return retval;
 }
 

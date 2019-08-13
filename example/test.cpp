@@ -11,6 +11,7 @@ int main(int argc, char** argv) {
   auto& d = p.addArg<IntArg>("-j", 42, "CONCURRENCY", "specify the concurrency level");
   auto& e = p.addArg<StringChoiceArg>("--mode", "demonstrate", "MODE", "specify running mode", std::initializer_list<std::string>{"demonstrate", "party", "lazy"}, std::initializer_list<std::string>{"demonstrate usage", "do something crazy", "do nothing"});
   auto& f = p.addArg<StringChoiceArg>("--undoc-mode", "demonstrate", "MODE", "specify running mode but don't expect docs", std::initializer_list<std::string>{"demonstrate", "party", "lazy"});
+  auto& g = p.addPosArg<StringChoiceArg>("Voyager", "SHIP", "specify a ship to fly through the delta quadrant", std::initializer_list<std::string>{"Voyager", "Enterprise", "Defiant"});
 
   p.parse(argc, argv);
 
@@ -20,6 +21,7 @@ int main(int argc, char** argv) {
   fmt::print("concurrency is of type {1} and has value {0}\n", d, boost::typeindex::type_id_with_cvr<decltype(d)>().pretty_name());
   fmt::print("mode        is of type {1} and has value {0}\n", e, boost::typeindex::type_id_with_cvr<decltype(e)>().pretty_name());
   fmt::print("undoc mode  is of type {1} and has value {0}\n", f, boost::typeindex::type_id_with_cvr<decltype(f)>().pretty_name());
+  fmt::print("ship        is of type {1} and has value {0}\n", g, boost::typeindex::type_id_with_cvr<decltype(g)>().pretty_name());
 
   return 0;
 }

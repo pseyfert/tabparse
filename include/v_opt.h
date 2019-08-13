@@ -12,7 +12,7 @@ class ArgBase {
   public:
     friend Parser;
   protected:
-    virtual std::string completion_entry() = 0;
+    virtual std::string completion_entry(bool skip_description) = 0;
     virtual ArgIter parse(ArgIter) = 0;
     std::string m_name;
     std::string m_doc;
@@ -40,7 +40,7 @@ class StringArg : public TemplateArg<std::string> {
     using TemplateArg<std::string>::TemplateArg;
     virtual ~StringArg() {}
   protected:
-    std::string completion_entry() override;
+    std::string completion_entry(bool skip_description) override;
     ArgIter parse(ArgIter iter) override {
       m_storage = *iter;
       return ++iter;
@@ -64,7 +64,7 @@ class StringChoiceArg : public StringArg {
     }
     virtual ~StringChoiceArg() {}
   protected:
-    std::string completion_entry() override;
+    std::string completion_entry(bool skip_description) override;
     std::vector<std::string> m_choices;
     std::vector<std::string> m_descriptions;
     ArgIter parse(ArgIter iter) override ;
@@ -83,7 +83,7 @@ class FileArg : public StringArg {
     }
     virtual ~FileArg() {}
   protected:
-    std::string completion_entry() override;
+    std::string completion_entry(bool skip_description) override;
     std::string m_pattern;
 };
 
@@ -92,7 +92,7 @@ class DirectoryArg : public StringArg {
     using StringArg::StringArg;
     virtual ~DirectoryArg() {}
   protected:
-    std::string completion_entry() override;
+    std::string completion_entry(bool skip_description) override;
 };
 
 class IntArg : public TemplateArg<int> {
@@ -100,7 +100,7 @@ class IntArg : public TemplateArg<int> {
     using TemplateArg<int>::TemplateArg;
     virtual ~IntArg() {}
   protected:
-    std::string completion_entry() override;
+    std::string completion_entry(bool skip_description) override;
     ArgIter parse(ArgIter) override;
 };
 
@@ -122,7 +122,7 @@ class SwitchArg : public TemplateArg<bool> {
     virtual ~SwitchArg() {}
     friend Parser;
   protected:
-    std::string completion_entry() override;
+    std::string completion_entry(bool skip_description) override;
     ArgIter parse(ArgIter) override;
     bool m_storage{false};
 };

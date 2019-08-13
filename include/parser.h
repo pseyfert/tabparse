@@ -7,6 +7,7 @@
 class Parser {
   private:
     std::vector<std::unique_ptr<ArgBase>> m_args;
+    std::vector<std::unique_ptr<ArgBase>> m_pos;
   public:
     Parser() {
       m_args.push_back(
@@ -16,6 +17,8 @@ class Parser {
     void parse(int argc, char *argv[]);
     template <typename ARGTYPE, typename ...OTHERARGS>
     typename ARGTYPE::type& addArg(std::string_view name, typename ARGTYPE::type default_value, std::string_view shortdoc, std::string_view doc, OTHERARGS... otherargs);
+    template <typename ARGTYPE, typename ...OTHERARGS>
+    typename ARGTYPE::type& addPosArg(typename ARGTYPE::type default_value, std::string_view shortdoc, std::string_view doc, OTHERARGS... otherargs);
     void print_help(std::string_view appname);
     void print_completion(std::string_view appname);
 };
