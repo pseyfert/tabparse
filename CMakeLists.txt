@@ -1,6 +1,8 @@
+cmake_minimum_required(VERSION 3.11) # honestly, this is a guess
+cmake_policy(SET CMP0048 NEW)
 project(tabparse
   VERSION 0
-  LANGUAGES CPP
+  LANGUAGES CXX
   DESCRIPTION "a c++ command line parser that integrates with zsh tab completions"
   )
 
