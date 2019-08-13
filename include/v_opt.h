@@ -64,7 +64,15 @@ class StringChoiceArg : public StringArg {
 
 class FileArg : public StringArg {
   public:
-    using StringArg::StringArg;
+    FileArg(std::string_view name, std::string_view default_value,
+        std::string_view shortdoc, std::string_view doc,
+        std::string_view pattern)
+        : m_pattern{std::move(pattern)} {
+      ArgBase::m_name = name;
+      ArgBase::m_shortdoc = shortdoc;
+      ArgBase::m_doc = doc;
+      TemplateArg<std::string>::m_default = default_value;
+    }
     virtual ~FileArg() {}
   protected:
     std::string completion_entry() override;

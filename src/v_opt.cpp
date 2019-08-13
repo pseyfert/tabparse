@@ -28,7 +28,7 @@ std::string FileArg::completion_entry() {
   retval += m_name;
   retval += "[" + m_doc + "]";
   retval += ":" + m_shortdoc + ":";
-  retval += " _files -g " + m_pattern;
+  retval += " _files -g '" + m_pattern + "'";
   return retval;
 }
 
@@ -37,7 +37,7 @@ std::string DirectoryArg::completion_entry() {
   retval += m_name;
   retval += "[" + m_doc + "]";
   retval += ":" + m_shortdoc + ":";
-  retval += " _files -g -/";
+  retval += " _files -/";
   return retval;
 }
 

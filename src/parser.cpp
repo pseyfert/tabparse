@@ -26,7 +26,7 @@ void Parser::print_completion(std::string_view appname) {
   std::regex_replace(std::back_inserter(fname), appname.begin(), appname.end(), re, "");
 
   outfile.open(fmt::format("_{}",fname));
-  outfile << "#compdef " << appname << '\n';
+  outfile << "#compdef " << fname << '\n';
   outfile << '\n';
   outfile << "_arguments \\" << '\n';
   if (!m_args.empty()) {
@@ -76,7 +76,7 @@ void Parser::parse(int argc, char *argv[]) {
   }
 }
 template std::string& Parser::addArg<DirectoryArg>(std::string_view, std::string, std::string_view, std::string_view);
-template std::string& Parser::addArg<FileArg>(std::string_view, std::string, std::string_view, std::string_view);
+template std::string& Parser::addArg<FileArg>(std::string_view, std::string, std::string_view, std::string_view, std::string_view);
 template std::string& Parser::addArg<StringArg>(std::string_view, std::string, std::string_view, std::string_view);
 template int& Parser::addArg<IntArg>(std::string_view, int, std::string_view, std::string_view);
 template bool& Parser::addArg<SwitchArg>(std::string_view, bool, std::string_view, std::string_view);
