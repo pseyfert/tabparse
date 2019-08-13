@@ -70,7 +70,7 @@ void Parser::parse(int argc, char *argv[]) {
       /* increment in parse method */) {
     auto matchingarg = std::find_if(m_args.begin(), m_args.end(), [iter](const auto& arg) { return *iter == arg->m_name; });
     if (matchingarg != m_args.end()) {
-      iter = (*matchingarg)->parse(iter);
+      iter = (*matchingarg)->parse(++iter);
     } else {
       break;
     }

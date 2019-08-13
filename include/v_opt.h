@@ -42,7 +42,7 @@ class StringArg : public TemplateArg<std::string> {
   protected:
     std::string completion_entry() override;
     ArgIter parse(ArgIter iter) override {
-      m_storage = *(++iter);
+      m_storage = *iter;
       return ++iter;
     }
 };

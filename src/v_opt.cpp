@@ -5,7 +5,7 @@
 
 ArgIter IntArg::parse(ArgIter iter) {
   char* end;
-  m_storage = int(strtol(&*(*(++iter)).begin(),&end,0));
+  m_storage = int(strtol(&*(*iter).begin(),&end,0));
   if (&*(*iter).end()!=end) {
     throw std::invalid_argument(fmt::format("could not parse {} as integer.", *iter));
   }
@@ -14,7 +14,7 @@ ArgIter IntArg::parse(ArgIter iter) {
 
 ArgIter SwitchArg::parse(ArgIter iter) {
   m_storage = true;
-  return ++iter;
+  return iter;
 }
 
 std::string IntArg::completion_entry() {
@@ -81,7 +81,7 @@ std::string SwitchArg::completion_entry() {
 }
 
 ArgIter StringChoiceArg::parse(ArgIter iter) {
-  m_storage = *(++iter);
+  m_storage = *iter;
   if (m_choices.end() == std::find(m_choices.begin(), m_choices.end(), m_storage)) {
     throw std::invalid_argument(fmt::format("{} is not a valid choice for {}.", m_storage, m_name));
   }
