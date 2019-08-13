@@ -6,7 +6,7 @@
 ArgIter IntArg::parse(ArgIter iter) {
   char* end;
   m_storage = int(strtol(&*(*(++iter)).begin(),&end,0));
-  if (&*(*(++iter)).end()!=end) {
+  if (&*(*iter).end()!=end) {
     throw std::invalid_argument(fmt::format("could not parse {} as integer.", *iter));
   }
   return ++iter;
