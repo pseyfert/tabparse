@@ -81,3 +81,4 @@ template std::string& Parser::addArg<StringArg>(std::string_view, std::string, s
 template int& Parser::addArg<IntArg>(std::string_view, int, std::string_view, std::string_view);
 template bool& Parser::addArg<SwitchArg>(std::string_view, bool, std::string_view, std::string_view);
 template std::string& Parser::addArg<StringChoiceArg>(std::string_view, std::string, std::string_view, std::string_view, std::initializer_list<std::string>);
+template std::string& Parser::addArg<StringChoiceArg>(std::string_view, std::string, std::string_view, std::string_view, std::initializer_list<std::string>, std::initializer_list<std::string>);

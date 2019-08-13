@@ -1,7 +1,9 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <algorithm>
 #include <string_view>
+#include <exception>
 
 class Parser;
 using ArgIter = decltype(std::declval<std::vector<std::string>>().begin());
@@ -49,17 +51,23 @@ class StringChoiceArg : public StringArg {
   public:
     StringChoiceArg(std::string_view name, std::string_view default_value,
                     std::string_view shortdoc, std::string_view doc,
-                    std::initializer_list<std::string> options)
-        : m_choices{std::move(options)} {
+                    std::initializer_list<std::string> options,
+                    std::initializer_list<std::string> descriptions = {})
+        : m_choices{std::move(options)}, m_descriptions{std::move(descriptions)} {
       ArgBase::m_name = name;
       ArgBase::m_shortdoc = shortdoc;
       ArgBase::m_doc = doc;
       TemplateArg<std::string>::m_default = default_value;
+      if (m_choices.size() != m_descriptions.size() && !m_descriptions.empty()) {
+        throw std::length_error("if descriptions are provided, then one must be provided for each option");
+      }
     }
     virtual ~StringChoiceArg() {}
   protected:
     std::string completion_entry() override;
     std::vector<std::string> m_choices;
+    std::vector<std::string> m_descriptions;
+    ArgIter parse(ArgIter iter) override ;
 };
 
 class FileArg : public StringArg {
