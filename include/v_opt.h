@@ -38,6 +38,7 @@ class TemplateArg : public ArgBase {
 class StringArg : public TemplateArg<std::string> {
   public:
     using TemplateArg<std::string>::TemplateArg;
+    virtual ~StringArg() {}
   protected:
     std::string completion_entry() override;
     ArgIter parse(ArgIter iter) override {
@@ -49,6 +50,7 @@ class StringArg : public TemplateArg<std::string> {
 class FileArg : public StringArg {
   public:
     using StringArg::StringArg;
+    virtual ~FileArg() {}
   protected:
     std::string completion_entry() override;
     std::string m_pattern;
@@ -57,6 +59,7 @@ class FileArg : public StringArg {
 class DirectoryArg : public StringArg {
   public:
     using StringArg::StringArg;
+    virtual ~DirectoryArg() {}
   protected:
     std::string completion_entry() override;
 };
@@ -64,6 +67,7 @@ class DirectoryArg : public StringArg {
 class IntArg : public TemplateArg<int> {
   public:
     using TemplateArg<int>::TemplateArg;
+    virtual ~IntArg() {}
   protected:
     std::string completion_entry() override;
     ArgIter parse(ArgIter) override;
@@ -80,6 +84,7 @@ class SwitchArg : public TemplateArg<bool> {
       ArgBase::m_name = name;
       ArgBase::m_doc = doc;
     }
+    virtual ~SwitchArg() {}
   protected:
     std::string completion_entry() override;
     ArgIter parse(ArgIter) override;
