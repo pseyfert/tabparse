@@ -12,6 +12,16 @@ template <typename ARGTYPE, typename ...OTHERARGS>
 typename ARGTYPE::type &
 Parser::addArg(std::string_view name, typename ARGTYPE::type default_value,
                std::string_view shortdoc, std::string_view doc, OTHERARGS... otherargs) {
+  auto findres = std::find_if(m_args.begin(), m_args.end(),
+                              [name](const auto &existing_arg) {
+                                return existing_arg->m_name == name;
+                              });
+  if (m_args.end() != findres) {
+    throw std::invalid_argument(fmt::format("option with name {} already exists", name));
+  }
+  if (name[0] != '-') {
+    throw std::invalid_argument(fmt::format("flag arguments should start with - or --. {} does not.", name));
+  }
   auto thearg = std::make_unique<ARGTYPE>(std::move(name), std::move(default_value), std::move(shortdoc), std::move(doc), std::forward<OTHERARGS>(otherargs)...);
   auto& retval = thearg->m_storage;
   m_args.push_back(std::move(thearg));
@@ -76,6 +86,7 @@ void Parser::parse(int argc, char *argv[]) {
     }
   }
 }
+
 template std::string& Parser::addArg<DirectoryArg>(std::string_view, std::string, std::string_view, std::string_view);
 template std::string& Parser::addArg<FileArg>(std::string_view, std::string, std::string_view, std::string_view, std::string_view);
 template std::string& Parser::addArg<StringArg>(std::string_view, std::string, std::string_view, std::string_view);
