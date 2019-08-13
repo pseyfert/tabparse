@@ -49,6 +49,19 @@ std::string StringArg::completion_entry() {
   return retval;
 }
 
+std::string StringChoiceArg::completion_entry() {
+  std::string retval;
+  retval += m_name;
+  retval += "[" + m_doc + "]";
+  retval += ":" + m_shortdoc + ":";
+  retval += "(";
+  for (size_t i = 0; i < m_choices.size() - 1; ++i) {
+    retval += m_choices[i] + " ";
+  }
+  retval += m_choices.back() + ")";
+  return retval;
+}
+
 std::string SwitchArg::completion_entry() {
   std::string retval;
   retval += m_name;

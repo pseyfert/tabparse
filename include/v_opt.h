@@ -45,6 +45,23 @@ class StringArg : public TemplateArg<std::string> {
     }
 };
 
+class StringChoiceArg : public StringArg {
+  public:
+    StringChoiceArg(std::string_view name, std::string_view default_value,
+                    std::string_view shortdoc, std::string_view doc,
+                    std::initializer_list<std::string> options)
+        : m_choices{std::move(options)} {
+      ArgBase::m_name = name;
+      ArgBase::m_shortdoc = shortdoc;
+      ArgBase::m_doc = doc;
+      TemplateArg<std::string>::m_default = default_value;
+    }
+    virtual ~StringChoiceArg() {}
+  protected:
+    std::string completion_entry() override;
+    std::vector<std::string> m_choices;
+};
+
 class FileArg : public StringArg {
   public:
     using StringArg::StringArg;
@@ -82,7 +99,12 @@ class SwitchArg : public TemplateArg<bool> {
       ArgBase::m_name = name;
       ArgBase::m_doc = doc;
     }
+    SwitchArg(std::string_view name, bool /*unused*/, std::string_view /*unused*/, std::string_view doc) {
+      ArgBase::m_name = name;
+      ArgBase::m_doc = doc;
+    }
     virtual ~SwitchArg() {}
+    friend Parser;
   protected:
     std::string completion_entry() override;
     ArgIter parse(ArgIter) override;

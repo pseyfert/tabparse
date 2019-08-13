@@ -8,11 +8,11 @@
 #include <fstream>
 #include <fmt/format.h>
 
-template <typename ARGTYPE>
+template <typename ARGTYPE, typename ...OTHERARGS>
 typename ARGTYPE::type &
 Parser::addArg(std::string_view name, typename ARGTYPE::type default_value,
-               std::string_view shortdoc, std::string_view doc) {
-  auto thearg = std::make_unique<ARGTYPE>(name, default_value, shortdoc, doc);
+               std::string_view shortdoc, std::string_view doc, OTHERARGS... otherargs) {
+  auto thearg = std::make_unique<ARGTYPE>(std::move(name), std::move(default_value), std::move(shortdoc), std::move(doc), std::forward<OTHERARGS>(otherargs)...);
   auto& retval = thearg->m_storage;
   m_args.push_back(std::move(thearg));
   return retval;
@@ -79,4 +79,5 @@ template std::string& Parser::addArg<DirectoryArg>(std::string_view, std::string
 template std::string& Parser::addArg<FileArg>(std::string_view, std::string, std::string_view, std::string_view);
 template std::string& Parser::addArg<StringArg>(std::string_view, std::string, std::string_view, std::string_view);
 template int& Parser::addArg<IntArg>(std::string_view, int, std::string_view, std::string_view);
-// template bool& Parser::addArg<SwitchArg>(std::string_view, int, std::string_view, std::string_view);
+template bool& Parser::addArg<SwitchArg>(std::string_view, bool, std::string_view, std::string_view);
+template std::string& Parser::addArg<StringChoiceArg>(std::string_view, std::string, std::string_view, std::string_view, std::initializer_list<std::string>);
