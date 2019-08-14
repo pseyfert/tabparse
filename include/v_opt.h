@@ -113,10 +113,12 @@ class SwitchArg : public TemplateArg<bool> {
   public:
     SwitchArg(std::string_view name, std::string_view doc) {
       ArgBase::m_name = name;
+      ArgBase::m_shortdoc = "";
       ArgBase::m_doc = doc;
     }
     SwitchArg(std::string_view name, bool /*unused*/, std::string_view /*unused*/, std::string_view doc) {
       ArgBase::m_name = name;
+      ArgBase::m_shortdoc = "";
       ArgBase::m_doc = doc;
     }
     virtual ~SwitchArg() {}

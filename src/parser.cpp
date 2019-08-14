@@ -68,17 +68,24 @@ void Parser::print_completion(std::string_view appname) {
 }
 
 void Parser::print_help(std::string_view appname) {
-  auto max_length =
-      (*std::max_element(m_args.begin(), m_args.end(),
-                         [](const auto &a, const auto &b) {
-                           return a->m_name.size() < b->m_name.size();
-                         }))
-          ->m_name.size();
 
-  std::cout << "USAGE: " << appname << '\n';
+  auto printlength = [](const auto& arg_unique_ptr) {
+    return arg_unique_ptr->m_name.size() + 1 + arg_unique_ptr->m_shortdoc.size();
+  };
+  auto max_length = printlength(
+      *std::max_element(m_args.begin(), m_args.end(),
+                        [printlength](const auto &a, const auto &b) {
+                          return printlength(a) < printlength(b);
+                        }));
+
+  std::cout << "USAGE: " << appname;
+  for (const auto& pos: m_pos) {
+    fmt::print(" {}", pos->m_shortdoc);
+  }
+  std::cout << '\n';
   std::cout << '\n';
   for (const auto& arg: m_args) {
-    fmt::print("  {:<{}}{}\n", arg->m_name, max_length + 3, arg->m_doc);
+    fmt::print("  {} {:<{}}{}\n", arg->m_name, arg->m_shortdoc, max_length + 2 - arg->m_name.size(), arg->m_doc);
   }
 }
 
