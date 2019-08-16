@@ -5,13 +5,13 @@
 
 int main(int argc, char** argv) {
   Parser p;
-  auto& a = p.addArg<DirectoryArg>("--build-dir", ".", "BUILDDIR", "specify the build directory");
-  auto& b = p.addArg<FileArg>("--some-file", "main.cpp", "FILE", "specify some file", std::string_view{"*.cpp"});
-  auto& c = p.addArg<StringArg>("--name", "themaster", "NAME", "specify some name");
-  auto& d = p.addArg<IntArg>("-j", 42, "CONCURRENCY", "specify the concurrency level");
-  auto& e = p.addArg<StringChoiceArg>("--mode", "demonstrate", "MODE", "specify running mode", std::initializer_list<std::string>{"demonstrate", "party", "lazy"}, std::initializer_list<std::string>{"demonstrate usage", "do something crazy", "do nothing"});
-  auto& f = p.addArg<StringChoiceArg>("--undoc-mode", "demonstrate", "MODE", "specify running mode but don't expect docs", std::initializer_list<std::string>{"demonstrate", "party", "lazy"});
-  auto& g = p.addPosArg<StringChoiceArg>("Voyager", "SHIP", "specify a ship to fly through the delta quadrant", std::initializer_list<std::string>{"Voyager", "Enterprise", "Defiant"});
+  auto& a = p.addArg<DirectoryArg>("--build-dir", ".", "BUILDDIR", "specify the build directory")->required(true)->ref();
+  auto& b = p.addArg<FileArg>("--some-file", "main.cpp", "FILE", "specify some file", std::string_view{"*.cpp"})->ref();
+  auto& c = p.addArg<StringArg>("--name", "themaster", "NAME", "specify some name")->ref();
+  auto& d = p.addArg<IntArg>("-j", 42, "CONCURRENCY", "specify the concurrency level")->ref();
+  auto& e = p.addArg<StringChoiceArg>("--mode", "demonstrate", "MODE", "specify running mode", std::initializer_list<std::string>{"demonstrate", "party", "lazy"}, std::initializer_list<std::string>{"demonstrate usage", "do something crazy", "do nothing"})->ref();
+  auto& f = p.addArg<StringChoiceArg>("--undoc-mode", "demonstrate", "MODE", "specify running mode but don't expect docs", std::initializer_list<std::string>{"demonstrate", "party", "lazy"})->ref();
+  auto& g = p.addPosArg<StringChoiceArg>("Voyager", "SHIP", "specify a ship to fly through the delta quadrant", std::initializer_list<std::string>{"Voyager", "Enterprise", "Defiant"})->ref();
 
   p.parse(argc, argv);
 

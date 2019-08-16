@@ -10,7 +10,7 @@
 #include <boost/range/join.hpp>
 
 template <typename ARGTYPE, typename ...OTHERARGS>
-typename ARGTYPE::type &
+ARGTYPE*
 Parser::addArg(std::string_view name, typename ARGTYPE::type default_value,
                std::string_view shortdoc, std::string_view doc, OTHERARGS... otherargs) {
   auto findres = std::find_if(m_args.begin(), m_args.end(),
@@ -24,19 +24,17 @@ Parser::addArg(std::string_view name, typename ARGTYPE::type default_value,
     throw std::invalid_argument(fmt::format("flag arguments should start with - or --. {} does not.", name));
   }
   auto thearg = std::make_unique<ARGTYPE>(name, std::move(default_value), shortdoc, doc, std::forward<OTHERARGS>(otherargs)...);
-  auto& retval = thearg->m_storage;
   m_args.push_back(std::move(thearg));
-  return retval;
+  return reinterpret_cast<ARGTYPE*>(m_args.back().get());
 }
 
 template <typename ARGTYPE, typename ...OTHERARGS>
-typename ARGTYPE::type &
+ARGTYPE*
 Parser::addPosArg(typename ARGTYPE::type default_value,
                   std::string_view shortdoc, std::string_view doc, OTHERARGS... otherargs) {
   auto thearg = std::make_unique<ARGTYPE>(fmt::format("{}", m_pos.size()+1), std::move(default_value), shortdoc, doc, std::forward<OTHERARGS>(otherargs)...);
-  auto& retval = thearg->m_storage;
   m_pos.push_back(std::move(thearg));
-  return retval;
+  return reinterpret_cast<ARGTYPE*>(m_pos.back().get());
 }
 
 void Parser::print_completion(std::string_view appname) {
@@ -130,18 +128,18 @@ void Parser::parse(int argc, char *argv[]) {
 
 }
 
-template std::string& Parser::addArg<DirectoryArg>(std::string_view, std::string, std::string_view, std::string_view);
-template std::string& Parser::addArg<FileArg>(std::string_view, std::string, std::string_view, std::string_view, std::string_view);
-template std::string& Parser::addArg<StringArg>(std::string_view, std::string, std::string_view, std::string_view);
-template int& Parser::addArg<IntArg>(std::string_view, int, std::string_view, std::string_view);
-template bool& Parser::addArg<SwitchArg>(std::string_view, bool, std::string_view, std::string_view);
-template std::string& Parser::addArg<StringChoiceArg>(std::string_view, std::string, std::string_view, std::string_view, std::initializer_list<std::string>);
-template std::string& Parser::addArg<StringChoiceArg>(std::string_view, std::string, std::string_view, std::string_view, std::initializer_list<std::string>, std::initializer_list<std::string>);
+template DirectoryArg* Parser::addArg<DirectoryArg>(std::string_view, std::string, std::string_view, std::string_view);
+template FileArg* Parser::addArg<FileArg>(std::string_view, std::string, std::string_view, std::string_view, std::string_view);
+template StringArg* Parser::addArg<StringArg>(std::string_view, std::string, std::string_view, std::string_view);
+template IntArg* Parser::addArg<IntArg>(std::string_view, int, std::string_view, std::string_view);
+template SwitchArg* Parser::addArg<SwitchArg>(std::string_view, bool, std::string_view, std::string_view);
+template StringChoiceArg* Parser::addArg<StringChoiceArg>(std::string_view, std::string, std::string_view, std::string_view, std::initializer_list<std::string>);
+template StringChoiceArg* Parser::addArg<StringChoiceArg>(std::string_view, std::string, std::string_view, std::string_view, std::initializer_list<std::string>, std::initializer_list<std::string>);
 
-template std::string& Parser::addPosArg<DirectoryArg>(std::string, std::string_view, std::string_view);
-template std::string& Parser::addPosArg<FileArg>(std::string, std::string_view, std::string_view, std::string_view);
-template std::string& Parser::addPosArg<StringArg>(std::string, std::string_view, std::string_view);
-template int& Parser::addPosArg<IntArg>(int, std::string_view, std::string_view);
+template DirectoryArg* Parser::addPosArg<DirectoryArg>(std::string, std::string_view, std::string_view);
+template FileArg* Parser::addPosArg<FileArg>(std::string, std::string_view, std::string_view, std::string_view);
+template StringArg* Parser::addPosArg<StringArg>(std::string, std::string_view, std::string_view);
+template IntArg* Parser::addPosArg<IntArg>(int, std::string_view, std::string_view);
 // template bool& Parser::addPosArg<SwitchArg>(bool, std::string_view, std::string_view);
-template std::string& Parser::addPosArg<StringChoiceArg>(std::string, std::string_view, std::string_view, std::initializer_list<std::string>);
-template std::string& Parser::addPosArg<StringChoiceArg>(std::string, std::string_view, std::string_view, std::initializer_list<std::string>, std::initializer_list<std::string>);
+template StringChoiceArg* Parser::addPosArg<StringChoiceArg>(std::string, std::string_view, std::string_view, std::initializer_list<std::string>);
+template StringChoiceArg* Parser::addPosArg<StringChoiceArg>(std::string, std::string_view, std::string_view, std::initializer_list<std::string>, std::initializer_list<std::string>);

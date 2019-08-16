@@ -13,9 +13,10 @@ ArgIter IntArg::parse(ArgIter iter) {
   return ++iter;
 }
 
-ArgIter StringArg::parse(ArgIter iter) {
-  m_flags.set(ArgFlags::Present);
-  m_storage = *iter;
+template <typename FINAL_ARG>
+ArgIter StringArgBase<FINAL_ARG>::parse(ArgIter iter) {
+  ArgBase::m_flags.set(ArgFlags::Present);
+  TemplateArg<std::string, FINAL_ARG>::m_storage = *iter;
   return ++iter;
 }
 

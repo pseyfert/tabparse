@@ -24,7 +24,7 @@ class ArgBase {
   private:
 };
 
-template <typename STORAGE_TYPE>
+template <typename STORAGE_TYPE, typename FINAL_ARG>
 class TemplateArg : public ArgBase {
   public:
     TemplateArg() = default;
@@ -37,22 +37,38 @@ class TemplateArg : public ArgBase {
     type& ref() {
       return m_storage;
     }
+    FINAL_ARG* required(bool req) {
+      if (req) {
+        ArgBase::m_flags.set(ArgFlags::Required);
+      } else {
+        ArgBase::m_flags.reset(ArgFlags::Required);
+      }
+      return reinterpret_cast<FINAL_ARG*>(this);
+    }
     friend Parser;
   protected:
     STORAGE_TYPE m_storage;
     STORAGE_TYPE m_default;
 };
 
-class StringArg : public TemplateArg<std::string> {
+template <typename FINAL_ARG>
+class StringArgBase : public TemplateArg<std::string, FINAL_ARG> {
   public:
-    using TemplateArg<std::string>::TemplateArg;
-    virtual ~StringArg() {}
+    using TemplateArg<std::string, FINAL_ARG>::TemplateArg;
+    virtual ~StringArgBase() {}
   protected:
-    std::string completion_entry(bool skip_description) override;
     ArgIter parse(ArgIter iter) override;
 };
 
-class StringChoiceArg : public StringArg {
+class StringArg : public StringArgBase<StringArg> {
+  public:
+    using StringArgBase<StringArg>::StringArgBase;
+    virtual ~StringArg() {}
+  protected:
+    std::string completion_entry(bool skip_description) override;
+};
+
+class StringChoiceArg : public StringArgBase<StringChoiceArg> {
   public:
     StringChoiceArg(std::string_view name, std::string_view default_value,
                     std::string_view shortdoc, std::string_view doc,
@@ -62,7 +78,7 @@ class StringChoiceArg : public StringArg {
       ArgBase::m_name = name;
       ArgBase::m_shortdoc = shortdoc;
       ArgBase::m_doc = doc;
-      TemplateArg<std::string>::m_default = default_value;
+      TemplateArg<std::string, StringChoiceArg>::m_default = default_value;
       if (m_choices.size() != m_descriptions.size() && !m_descriptions.empty()) {
         throw std::length_error("if descriptions are provided, then one must be provided for each option");
       }
@@ -75,7 +91,7 @@ class StringChoiceArg : public StringArg {
     ArgIter parse(ArgIter iter) override ;
 };
 
-class FileArg : public StringArg {
+class FileArg : public StringArgBase<FileArg> {
   public:
     FileArg(std::string_view name, std::string_view default_value,
         std::string_view shortdoc, std::string_view doc,
@@ -84,7 +100,7 @@ class FileArg : public StringArg {
       ArgBase::m_name = name;
       ArgBase::m_shortdoc = shortdoc;
       ArgBase::m_doc = doc;
-      TemplateArg<std::string>::m_default = default_value;
+      TemplateArg<std::string, FileArg>::m_default = default_value;
     }
     virtual ~FileArg() {}
   protected:
@@ -92,17 +108,17 @@ class FileArg : public StringArg {
     std::string m_pattern;
 };
 
-class DirectoryArg : public StringArg {
+class DirectoryArg : public StringArgBase<DirectoryArg> {
   public:
-    using StringArg::StringArg;
+    using StringArgBase::StringArgBase;
     virtual ~DirectoryArg() {}
   protected:
     std::string completion_entry(bool skip_description) override;
 };
 
-class IntArg : public TemplateArg<int> {
+class IntArg : public TemplateArg<int, IntArg> {
   public:
-    using TemplateArg<int>::TemplateArg;
+    using TemplateArg<int, IntArg>::TemplateArg;
     virtual ~IntArg() {}
   protected:
     std::string completion_entry(bool skip_description) override;
@@ -114,7 +130,7 @@ class IntArg : public TemplateArg<int> {
 //     ArgIter parse(ArgIter) override;
 // };
 
-class SwitchArg : public TemplateArg<bool> {
+class SwitchArg : public TemplateArg<bool, SwitchArg> {
   public:
     SwitchArg(std::string_view name, std::string_view doc) {
       ArgBase::m_name = name;
