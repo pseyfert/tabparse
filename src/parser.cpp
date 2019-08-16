@@ -23,7 +23,7 @@ Parser::addArg(std::string_view name, typename ARGTYPE::type default_value,
   if (name[0] != '-') {
     throw std::invalid_argument(fmt::format("flag arguments should start with - or --. {} does not.", name));
   }
-  auto thearg = std::make_unique<ARGTYPE>(std::move(name), std::move(default_value), std::move(shortdoc), std::move(doc), std::forward<OTHERARGS>(otherargs)...);
+  auto thearg = std::make_unique<ARGTYPE>(name, std::move(default_value), shortdoc, doc, std::forward<OTHERARGS>(otherargs)...);
   auto& retval = thearg->m_storage;
   m_args.push_back(std::move(thearg));
   return retval;
@@ -33,7 +33,7 @@ template <typename ARGTYPE, typename ...OTHERARGS>
 typename ARGTYPE::type &
 Parser::addPosArg(typename ARGTYPE::type default_value,
                   std::string_view shortdoc, std::string_view doc, OTHERARGS... otherargs) {
-  auto thearg = std::make_unique<ARGTYPE>(fmt::format("{}", m_pos.size()+1), std::move(default_value), std::move(shortdoc), std::move(doc), std::forward<OTHERARGS>(otherargs)...);
+  auto thearg = std::make_unique<ARGTYPE>(fmt::format("{}", m_pos.size()+1), std::move(default_value), shortdoc, doc, std::forward<OTHERARGS>(otherargs)...);
   auto& retval = thearg->m_storage;
   m_pos.push_back(std::move(thearg));
   return retval;
@@ -55,7 +55,9 @@ void Parser::print_completion(std::string_view appname) {
       outfile << "  \"" << m_args[i]->completion_entry(false) << "\" \\\n";
     }
     outfile << "  \"" << m_args.back()->completion_entry(false) << "\"";
-    if (!m_pos.empty()) outfile << " \\";
+    if (!m_pos.empty()) {
+      outfile << " \\";
+    }
     outfile << "\n";
   }
   if (!m_pos.empty()) {
@@ -111,13 +113,12 @@ void Parser::parse(int argc, char *argv[]) {
     } else {
       if (m_pos.empty()) {
         throw std::invalid_argument(fmt::format("did not identify {} as option and did not expect positional arguments.", *iter));
+      }
+      if (posarg_iter != m_pos.end()) {
+        (*posarg_iter)->parse(iter++);
+        posarg_iter++;
       } else {
-        if (posarg_iter != m_pos.end()) {
-          (*posarg_iter)->parse(iter++);
-          posarg_iter++;
-        } else {
-        throw std::invalid_argument(fmt::format("no more positional arguments expected, received {}.", *iter));
-        }
+      throw std::invalid_argument(fmt::format("no more positional arguments expected, received {}.", *iter));
       }
     }
   }
