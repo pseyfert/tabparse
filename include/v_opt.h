@@ -4,9 +4,12 @@
 #include <algorithm>
 #include <string_view>
 #include <exception>
+#include "enumset.h"
 
 class Parser;
 using ArgIter = decltype(std::declval<std::vector<std::string>>().begin());
+
+BETTER_ENUM(ArgFlags, int, Required, Present)
 
 class ArgBase {
   public:
@@ -17,6 +20,8 @@ class ArgBase {
     std::string m_name;
     std::string m_doc;
     std::string m_shortdoc;
+    EnumSet<ArgFlags> m_flags{0};
+  private:
 };
 
 template <typename STORAGE_TYPE>
@@ -29,6 +34,9 @@ class TemplateArg : public ArgBase {
       ArgBase::m_shortdoc = shortdoc;
     }
     using type = STORAGE_TYPE;
+    type& ref() {
+      return m_storage;
+    }
     friend Parser;
   protected:
     STORAGE_TYPE m_storage;
@@ -41,10 +49,7 @@ class StringArg : public TemplateArg<std::string> {
     virtual ~StringArg() {}
   protected:
     std::string completion_entry(bool skip_description) override;
-    ArgIter parse(ArgIter iter) override {
-      m_storage = *iter;
-      return ++iter;
-    }
+    ArgIter parse(ArgIter iter) override;
 };
 
 class StringChoiceArg : public StringArg {

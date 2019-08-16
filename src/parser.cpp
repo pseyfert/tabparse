@@ -121,6 +121,12 @@ void Parser::parse(int argc, char *argv[]) {
       }
     }
   }
+  for (const auto& arg : boost::range::join( m_args, m_pos)) {
+    if (arg->m_flags.test(ArgFlags::Required) && !arg->m_flags.test(ArgFlags::Present)) {
+      throw std::invalid_argument(fmt::format("required argument {} not used.", arg->m_name));
+    }
+  }
+
 }
 
 template std::string& Parser::addArg<DirectoryArg>(std::string_view, std::string, std::string_view, std::string_view);

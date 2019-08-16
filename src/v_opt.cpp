@@ -4,6 +4,7 @@
 #include <exception>
 
 ArgIter IntArg::parse(ArgIter iter) {
+  m_flags.set(ArgFlags::Present);
   char* end;
   m_storage = int(strtol(&*(*iter).begin(),&end,0));
   if (&*(*iter).end()!=end) {
@@ -12,7 +13,14 @@ ArgIter IntArg::parse(ArgIter iter) {
   return ++iter;
 }
 
+ArgIter StringArg::parse(ArgIter iter) {
+  m_flags.set(ArgFlags::Present);
+  m_storage = *iter;
+  return ++iter;
+}
+
 ArgIter SwitchArg::parse(ArgIter iter) {
+  m_flags.set(ArgFlags::Present);
   m_storage = true;
   return iter;
 }
@@ -81,6 +89,7 @@ std::string SwitchArg::completion_entry(bool skip_description) {
 }
 
 ArgIter StringChoiceArg::parse(ArgIter iter) {
+  m_flags.set(ArgFlags::Present);
   m_storage = *iter;
   if (m_choices.end() == std::find(m_choices.begin(), m_choices.end(), m_storage)) {
     throw std::invalid_argument(fmt::format("{} is not a valid choice for {}.", m_storage, m_name));
