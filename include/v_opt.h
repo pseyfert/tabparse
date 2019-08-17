@@ -24,6 +24,31 @@ class ArgBase {
   private:
 };
 
+class EndAwareArg {
+  public:
+    virtual ArgIter parse(ArgIter, ArgIter) = 0;
+    virtual ~EndAwareArg() {}
+};
+
+template <typename BASE_ARG>
+class MultiArg : public BASE_ARG, public EndAwareArg {
+  public:
+    ArgIter parse(ArgIter iter, ArgIter end) override {
+      for (; iter != end;) {
+        iter = BASE_ARG::parse(iter);
+        m_allvals.push_back(BASE_ARG::m_storage);
+      }
+      return iter;
+    }
+    using BASE_ARG::BASE_ARG;
+    // removes TemplateArg::ref from the overload set
+    std::vector<typename BASE_ARG::type>& ref() {
+      return m_allvals;
+    }
+  protected:
+    std::vector<typename BASE_ARG::type> m_allvals;
+};
+
 template <typename STORAGE_TYPE, typename FINAL_ARG>
 class TemplateArg : public ArgBase {
   public:
@@ -61,7 +86,7 @@ class StringArgBase : public TemplateArg<std::string, FINAL_ARG> {
 
 class StringArg : public StringArgBase<StringArg> {
   public:
-    using StringArgBase<StringArg>::StringArgBase;
+    using StringArgBase::StringArgBase;
     virtual ~StringArg() {}
   protected:
     std::string completion_entry(bool skip_description) override;

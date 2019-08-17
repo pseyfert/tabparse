@@ -37,6 +37,12 @@ Parser::addPosArg(typename ARGTYPE::type default_value,
   return reinterpret_cast<ARGTYPE*>(m_pos.back().get());
 }
 
+template <typename BASE_ARG, typename ...OTHERARGS>
+MultiArg<BASE_ARG>* Parser::addOther(std::string_view shortdoc, std::string_view doc, OTHERARGS... otherargs) {
+  m_others = std::make_unique<MultiArg<BASE_ARG>>("*", typename BASE_ARG::type{}, shortdoc, doc, std::forward<OTHERARGS>(otherargs)...);
+  return reinterpret_cast<MultiArg<BASE_ARG>*>(&m_others);
+}
+
 void Parser::print_completion(std::string_view appname) {
   std::ofstream outfile;
   std::string fname;
@@ -116,7 +122,12 @@ void Parser::parse(int argc, char *argv[]) {
         (*posarg_iter)->parse(iter++);
         posarg_iter++;
       } else {
-      throw std::invalid_argument(fmt::format("no more positional arguments expected, received {}.", *iter));
+        if (m_others) {
+          // TODO: can not interleave any m_args after this point :(
+          m_others->parse(iter, inargs.end());
+        } else {
+          throw std::invalid_argument(fmt::format("no more positional arguments expected, received {}.", *iter));
+        }
       }
     }
   }
@@ -146,3 +157,11 @@ template IntArg* Parser::addPosArg<IntArg>(int, std::string_view, std::string_vi
 // template bool& Parser::addPosArg<SwitchArg>(bool, std::string_view, std::string_view);
 template StringChoiceArg* Parser::addPosArg<StringChoiceArg>(std::string, std::string_view, std::string_view, std::initializer_list<std::string>);
 template StringChoiceArg* Parser::addPosArg<StringChoiceArg>(std::string, std::string_view, std::string_view, std::initializer_list<std::string>, std::initializer_list<std::string>);
+
+template MultiArg<DirectoryArg>* Parser::addOther<DirectoryArg>(std::string_view shortdoc, std::string_view doc);
+template MultiArg<FileArg>* Parser::addOther<FileArg>(std::string_view shortdoc, std::string_view doc, std::string_view pattern);
+template MultiArg<StringArg>* Parser::addOther<StringArg>(std::string_view shortdoc, std::string_view doc);
+template MultiArg<IntArg>* Parser::addOther<IntArg>(std::string_view shortdoc, std::string_view doc);
+template MultiArg<SwitchArg>* Parser::addOther<SwitchArg>(std::string_view shortdoc, std::string_view doc);
+template MultiArg<StringChoiceArg>* Parser::addOther<StringChoiceArg>(std::string_view shortdoc, std::string_view doc, std::initializer_list<std::string>);
+template MultiArg<StringChoiceArg>* Parser::addOther<StringChoiceArg>(std::string_view shortdoc, std::string_view doc, std::initializer_list<std::string>, std::initializer_list<std::string>);

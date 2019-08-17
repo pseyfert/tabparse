@@ -109,3 +109,12 @@ ArgIter StringChoiceArg::parse(ArgIter iter) {
   }
   return ++iter;
 }
+
+// template <typename BASE_ARG>
+// ArgIter MultiArg<BASE_ARG>::parse(ArgIter iter, ArgIter end) {
+//   for (; iter != end;) {
+//     iter = BASE_ARG::parse(iter);
+//     m_allvals.push_back(BASE_ARG::m_storage);
+//   }
+//   return iter;
+// }
