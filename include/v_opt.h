@@ -28,7 +28,7 @@ template <typename STORAGE_TYPE, typename FINAL_ARG>
 class TemplateArg : public ArgBase {
   public:
     TemplateArg() = default;
-    TemplateArg(std::string_view name, STORAGE_TYPE default_value, std::string_view shortdoc, std::string_view doc) : m_default{default_value} {
+    TemplateArg(std::string_view name, STORAGE_TYPE default_value, std::string_view shortdoc, std::string_view doc) : m_storage{default_value} {
       ArgBase::m_name = name;
       ArgBase::m_doc = doc;
       ArgBase::m_shortdoc = shortdoc;
@@ -48,7 +48,6 @@ class TemplateArg : public ArgBase {
     friend Parser;
   protected:
     STORAGE_TYPE m_storage;
-    STORAGE_TYPE m_default;
 };
 
 template <typename FINAL_ARG>
@@ -78,7 +77,7 @@ class StringChoiceArg : public StringArgBase<StringChoiceArg> {
       ArgBase::m_name = name;
       ArgBase::m_shortdoc = shortdoc;
       ArgBase::m_doc = doc;
-      TemplateArg<std::string, StringChoiceArg>::m_default = default_value;
+      TemplateArg<std::string, StringChoiceArg>::m_storage = default_value;
       if (m_choices.size() != m_descriptions.size() && !m_descriptions.empty()) {
         throw std::length_error("if descriptions are provided, then one must be provided for each option");
       }
@@ -100,7 +99,7 @@ class FileArg : public StringArgBase<FileArg> {
       ArgBase::m_name = name;
       ArgBase::m_shortdoc = shortdoc;
       ArgBase::m_doc = doc;
-      TemplateArg<std::string, FileArg>::m_default = default_value;
+      TemplateArg<std::string, FileArg>::m_storage = default_value;
     }
     virtual ~FileArg() {}
   protected:

@@ -121,8 +121,11 @@ void Parser::parse(int argc, char *argv[]) {
     }
   }
   for (const auto& arg : boost::range::join( m_args, m_pos)) {
-    if (arg->m_flags.test(ArgFlags::Required) && !arg->m_flags.test(ArgFlags::Present)) {
-      throw std::invalid_argument(fmt::format("required argument {} not used.", arg->m_name));
+    if (!arg->m_flags.test(ArgFlags::Present)) {
+      if (arg->m_flags.test(ArgFlags::Required)) {
+        throw std::invalid_argument(fmt::format("required argument {} not used.", arg->m_name));
+      }
+      // arg->m_storage = arg->m_default;
     }
   }
 
