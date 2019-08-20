@@ -14,6 +14,7 @@ BETTER_ENUM(ArgFlags, int, Required, Present)
 class ArgBase {
   public:
     friend Parser;
+    virtual ~ArgBase() {}
   protected:
     virtual std::string completion_entry(bool skip_description) = 0;
     virtual ArgIter parse(ArgIter) = 0;
