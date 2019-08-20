@@ -27,6 +27,7 @@ class ArgBase {
 
 class EndAwareArg {
   public:
+    virtual std::string completion_entry(bool skip_description) = 0;
     virtual ArgIter parse(ArgIter, ArgIter) = 0;
     virtual ~EndAwareArg() {}
 };
@@ -45,6 +46,9 @@ class MultiArg : public BASE_ARG, public EndAwareArg {
     // removes TemplateArg::ref from the overload set
     std::vector<typename BASE_ARG::type>& ref() {
       return m_allvals;
+    }
+    std::string completion_entry(bool skip_description) override {
+      return BASE_ARG::completion_entry(skip_description);
     }
   protected:
     std::vector<typename BASE_ARG::type> m_allvals;

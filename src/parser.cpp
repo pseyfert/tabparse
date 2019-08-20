@@ -59,7 +59,8 @@ void Parser::print_completion(std::string_view appname) {
       outfile << "  \"" << m_args[i]->completion_entry(false) << "\" \\\n";
     }
     outfile << "  \"" << m_args.back()->completion_entry(false) << "\"";
-    if (!m_pos.empty()) {
+    if (!m_pos.empty() || m_others) {
+      // if there is more to come
       outfile << " \\";
     }
     outfile << "\n";
@@ -68,7 +69,15 @@ void Parser::print_completion(std::string_view appname) {
     for (size_t i = 0 ; i < m_pos.size() -1 ; ++i) {
       outfile << "  \"" << m_pos[i]->completion_entry(true) << "\" \\\n";
     }
-    outfile << "  \"" << m_pos.back()->completion_entry(true) << "\"\n";
+    outfile << "  \"" << m_pos.back()->completion_entry(true) << "\"";
+    if (m_others) {
+      // if there is more to come
+      outfile << " \\";
+    }
+    outfile << "\n";
+  }
+  if (m_others) {
+    outfile << "  \"" << m_others->completion_entry(true) << "\"\n";
   }
   outfile.close();
 }

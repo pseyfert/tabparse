@@ -17,9 +17,6 @@ int main(int argc, char** argv) {
   auto& j = p.addPosArg<StringArg>("hai", "STRING", "specify yet another string")->ref();
   auto& k = p.addPosArg<StringChoiceArg>("demonstrate", "MODE", "specify running mode but don't expect docs", std::initializer_list<std::string>{"demonstrate", "party", "lazy"})->ref();
   auto& l = p.addPosArg<StringChoiceArg>("demonstrate", "MODE", "specify running mode with docs", std::initializer_list<std::string>{"demonstrate", "party", "lazy"}, std::initializer_list<std::string>{"demonstrate usage", "do something crazy", "do nothing"})->ref();
-
-
-
   auto& m = p.addOther<DirectoryArg>("OTHERDIR", "specify a ship to fly through the delta quadrant")->ref();
 
   p.parse(argc, argv);
