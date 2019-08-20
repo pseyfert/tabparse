@@ -147,16 +147,16 @@ template FileArg* Parser::addArg<FileArg>(std::string_view, std::string, std::st
 template StringArg* Parser::addArg<StringArg>(std::string_view, std::string, std::string_view, std::string_view);
 template IntArg* Parser::addArg<IntArg>(std::string_view, int, std::string_view, std::string_view);
 template SwitchArg* Parser::addArg<SwitchArg>(std::string_view, bool, std::string_view, std::string_view);
-// template StringChoiceArg* Parser::addArg<StringChoiceArg>(std::string_view, std::string, std::string_view, std::string_view, std::initializer_list<std::string>);
-// template StringChoiceArg* Parser::addArg<StringChoiceArg>(std::string_view, std::string, std::string_view, std::string_view, std::initializer_list<std::string>, std::initializer_list<std::string>);
+template StringChoiceArg* Parser::addArg<StringChoiceArg>(std::string_view, std::string, std::string_view, std::string_view, std::initializer_list<std::string>);
+template StringChoiceArg* Parser::addArg<StringChoiceArg>(std::string_view, std::string, std::string_view, std::string_view, std::initializer_list<std::string>, std::initializer_list<std::string>);
 
 template DirectoryArg* Parser::addPosArg<DirectoryArg>(std::string, std::string_view, std::string_view);
 template FileArg* Parser::addPosArg<FileArg>(std::string, std::string_view, std::string_view, std::string_view);
 template StringArg* Parser::addPosArg<StringArg>(std::string, std::string_view, std::string_view);
 template IntArg* Parser::addPosArg<IntArg>(int, std::string_view, std::string_view);
 // template bool& Parser::addPosArg<SwitchArg>(bool, std::string_view, std::string_view);
-// template StringChoiceArg* Parser::addPosArg<StringChoiceArg>(std::string, std::string_view, std::string_view, std::initializer_list<std::string>);
-// template StringChoiceArg* Parser::addPosArg<StringChoiceArg>(std::string, std::string_view, std::string_view, std::initializer_list<std::string>, std::initializer_list<std::string>);
+template StringChoiceArg* Parser::addPosArg<StringChoiceArg>(std::string, std::string_view, std::string_view, std::initializer_list<std::string>);
+template StringChoiceArg* Parser::addPosArg<StringChoiceArg>(std::string, std::string_view, std::string_view, std::initializer_list<std::string>, std::initializer_list<std::string>);
 
 template MultiArg<DirectoryArg>* Parser::addOther<DirectoryArg>(std::string_view shortdoc, std::string_view doc);
 // template MultiArg<FileArg>* Parser::addOther<FileArg>(std::string_view shortdoc, std::string_view doc, std::string_view pattern);

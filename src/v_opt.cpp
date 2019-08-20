@@ -102,9 +102,8 @@ std::string SwitchArg::completion_entry(bool skip_description) {
 }
 
 ArgIter StringChoiceArg::parse(ArgIter iter) {
-  m_flags.set(ArgFlags::Present);
-  m_storage = *iter;
-  if (m_choices.end() == std::find(m_choices.begin(), m_choices.end(), m_storage)) {
+  iter = StringArgBase<StringChoiceArg>::parse(iter);
+  if (m_choices.end() == std::find(m_choices.begin(), m_choices.end(), TemplateArg<std::string, StringChoiceArg>::m_storage)) {
     throw std::invalid_argument(fmt::format("{} is not a valid choice for {}.", m_storage, m_name));
   }
   return ++iter;
