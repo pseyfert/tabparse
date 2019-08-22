@@ -1,9 +1,11 @@
 #pragma once
 #include <string>
 #include <vector>
-#include <algorithm>
+#include <initializer_list>
 #include <string_view>
-#include <exception>
+#include <stdexcept>
+#include <type_traits>
+#include <utility>
 #include "enumset.h"
 
 class Parser;

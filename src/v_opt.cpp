@@ -1,7 +1,7 @@
 #include "v_opt.h"
 #include <cstdlib>
 #include <fmt/format.h>
-#include <exception>
+#include <algorithm>
 
 ArgIter IntArg::parse(ArgIter iter) {
   m_flags.set(ArgFlags::Present);

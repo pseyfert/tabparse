@@ -1,5 +1,9 @@
 #include "parser.h"
 #include "v_opt.h"
+#include <iterator>
+#include <stdexcept>
+#include <string>
+#include <utility>
 #include <vector>
 #include <memory>
 #include <algorithm>
@@ -55,7 +59,7 @@ void Parser::print_completion(std::string_view appname) {
   outfile << '\n';
   outfile << "_arguments \\" << '\n';
   if (!m_args.empty()) {
-    for (size_t i = 0 ; i < m_args.size() -1 ; ++i) {
+    for (std::size_t i = 0 ; i < m_args.size() -1 ; ++i) {
       outfile << "  \"" << m_args[i]->completion_entry(false) << "\" \\\n";
     }
     outfile << "  \"" << m_args.back()->completion_entry(false) << "\"";
@@ -66,7 +70,7 @@ void Parser::print_completion(std::string_view appname) {
     outfile << "\n";
   }
   if (!m_pos.empty()) {
-    for (size_t i = 0 ; i < m_pos.size() -1 ; ++i) {
+    for (std::size_t i = 0 ; i < m_pos.size() -1 ; ++i) {
       outfile << "  \"" << m_pos[i]->completion_entry(true) << "\" \\\n";
     }
     outfile << "  \"" << m_pos.back()->completion_entry(true) << "\"";
@@ -94,8 +98,18 @@ void Parser::print_help(std::string_view appname) {
                         }));
 
   std::cout << "USAGE: " << appname;
+  for (const auto& arg: m_args) {
+    if (arg->m_flags.test(ArgFlags::Required)) {
+      fmt::print(" {} {}", arg->m_name, arg->m_shortdoc);
+    }
+  }
   for (const auto& pos: m_pos) {
-    fmt::print(" {}", pos->m_shortdoc);
+    // TODO: a required positional argument should not follow a non-required one
+    if (pos->m_flags.test(ArgFlags::Required)) {
+      fmt::print(" {}", pos->m_shortdoc);
+    } else {
+      fmt::print(" [{}]", pos->m_shortdoc);
+    }
   }
   std::cout << '\n';
   std::cout << '\n';

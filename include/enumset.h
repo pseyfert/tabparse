@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <bitset>
+#include <bitset> // IWYU pragma: export
 #define BETTER_ENUMS_STRICT_CONVERSION 1
 #include "enum.h"
 
