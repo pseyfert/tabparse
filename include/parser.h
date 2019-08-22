@@ -16,6 +16,7 @@ class Parser {
           );
     }
     void parse(int argc, char *argv[]);
+    void sanitize();
     template <typename ARGTYPE, typename ...OTHERARGS>
     ARGTYPE* addArg(std::string_view name, typename ARGTYPE::type default_value, std::string_view shortdoc, std::string_view doc, OTHERARGS... otherargs);
     template <typename ARGTYPE, typename ...OTHERARGS>

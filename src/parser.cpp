@@ -11,7 +11,6 @@
 #include <iostream>
 #include <fstream>
 #include <fmt/format.h>
-#include <boost/range/join.hpp>
 
 template <typename ARGTYPE, typename ...OTHERARGS>
 ARGTYPE*
@@ -104,7 +103,6 @@ void Parser::print_help(std::string_view appname) {
     }
   }
   for (const auto& pos: m_pos) {
-    // TODO: a required positional argument should not follow a non-required one
     if (pos->m_flags.test(ArgFlags::Required)) {
       fmt::print(" {}", pos->m_shortdoc);
     } else {
@@ -118,7 +116,20 @@ void Parser::print_help(std::string_view appname) {
   }
 }
 
+void Parser::sanitize() {
+  std::size_t i = m_pos.size();
+  for (; i > 0 ; i--) {
+    if (m_pos[i-1]->m_flags.test(ArgFlags::Required)) {
+      break;
+    }
+  }
+  for (; i > 0 ; i--) {
+    m_pos[i-1]->m_flags.set(ArgFlags::Required);
+  }
+}
+
 void Parser::parse(int argc, char *argv[]) {
+  sanitize();
   std::vector<std::string> inargs(argv + 1, argv + argc);
   auto findres = std::find(inargs.begin(), inargs.end(), "--help");
   if (findres != inargs.end()) {
@@ -154,12 +165,18 @@ void Parser::parse(int argc, char *argv[]) {
       }
     }
   }
-  for (const auto& arg : boost::range::join( m_args, m_pos)) {
+  for (const auto& arg : m_args) {
     if (!arg->m_flags.test(ArgFlags::Present)) {
       if (arg->m_flags.test(ArgFlags::Required)) {
         throw std::invalid_argument(fmt::format("required argument {} not used.", arg->m_name));
       }
-      // arg->m_storage = arg->m_default;
+    }
+  }
+  for (const auto& arg : m_pos) {
+    if (!arg->m_flags.test(ArgFlags::Present)) {
+      if (arg->m_flags.test(ArgFlags::Required)) {
+        throw std::invalid_argument(fmt::format("required argument {} not used.", arg->m_shortdoc));
+      }
     }
   }
 

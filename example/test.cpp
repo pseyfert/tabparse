@@ -13,7 +13,7 @@ int main(int argc, char** argv) {
   auto& f = p.addArg<StringChoiceArg>("--undoc-mode", "demonstrate", "MODE", "specify running mode but don't expect docs", std::initializer_list<std::string>{"demonstrate", "party", "lazy"})->ref();
   auto& g = p.addPosArg<DirectoryArg>("../src", "OTHERDIR", "specify a ship to fly through the delta quadrant")->ref();
   auto& h = p.addPosArg<FileArg>("main.h", "MAINHEADER", "specify the most important header", std::string_view{"*.h"})->ref();
-  auto& i = p.addPosArg<IntArg>(1337, "BIGNUM", "specify yet another number")->ref();
+  auto& i = p.addPosArg<IntArg>(1337, "BIGNUM", "specify yet another number")->required(true)->ref();
   auto& j = p.addPosArg<StringArg>("hai", "STRING", "specify yet another string")->ref();
   auto& k = p.addPosArg<StringChoiceArg>("demonstrate", "MODE", "specify running mode but don't expect docs", std::initializer_list<std::string>{"demonstrate", "party", "lazy"})->ref();
   auto& l = p.addPosArg<StringChoiceArg>("demonstrate", "MODE", "specify running mode with docs", std::initializer_list<std::string>{"demonstrate", "party", "lazy"}, std::initializer_list<std::string>{"demonstrate usage", "do something crazy", "do nothing"})->ref();
