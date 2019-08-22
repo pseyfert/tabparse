@@ -29,7 +29,7 @@ Parser::addArg(std::string_view name, typename ARGTYPE::type default_value,
   }
   auto thearg = std::make_unique<ARGTYPE>(name, std::move(default_value), shortdoc, doc, std::forward<OTHERARGS>(otherargs)...);
   m_args.push_back(std::move(thearg));
-  return reinterpret_cast<ARGTYPE*>(m_args.back().get());
+  return static_cast<ARGTYPE*>(m_args.back().get());
 }
 
 template <typename ARGTYPE, typename ...OTHERARGS>
@@ -38,7 +38,7 @@ Parser::addPosArg(typename ARGTYPE::type default_value,
                   std::string_view shortdoc, std::string_view doc, OTHERARGS... otherargs) {
   auto thearg = std::make_unique<ARGTYPE>(fmt::format("{}", m_pos.size()+1), std::move(default_value), shortdoc, doc, std::forward<OTHERARGS>(otherargs)...);
   m_pos.push_back(std::move(thearg));
-  return reinterpret_cast<ARGTYPE*>(m_pos.back().get());
+  return static_cast<ARGTYPE*>(m_pos.back().get());
 }
 
 template <typename BASE_ARG, typename ...OTHERARGS>
