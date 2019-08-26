@@ -18,7 +18,7 @@ class ArgBase {
     friend Parser;
     virtual ~ArgBase() {}
   protected:
-    virtual std::string completion_entry(bool skip_description) = 0;
+    [[nodiscard]] virtual std::string completion_entry(bool skip_description) = 0;
     virtual ArgIter parse(ArgIter) = 0;
     std::string m_name;
     std::string m_doc;
@@ -29,7 +29,7 @@ class ArgBase {
 
 class EndAwareArg {
   public:
-    virtual std::string completion_entry(bool skip_description) = 0;
+    [[nodiscard]] virtual std::string completion_entry(bool skip_description) = 0;
     virtual ArgIter parse(ArgIter, ArgIter) = 0;
     virtual ~EndAwareArg() {}
 };
@@ -37,7 +37,7 @@ class EndAwareArg {
 template <typename BASE_ARG>
 class MultiArg : public BASE_ARG, public EndAwareArg {
   public:
-    ArgIter parse(ArgIter iter, ArgIter end) override {
+    [[nodiscard]] ArgIter parse(ArgIter iter, ArgIter end) override {
       for (; iter != end;) {
         iter = BASE_ARG::parse(iter);
         m_allvals.push_back(BASE_ARG::m_storage);
@@ -46,10 +46,10 @@ class MultiArg : public BASE_ARG, public EndAwareArg {
     }
     using BASE_ARG::BASE_ARG;
     // removes TemplateArg::ref from the overload set
-    std::vector<typename BASE_ARG::type>& ref() {
+    [[nodiscard]] std::vector<typename BASE_ARG::type>& ref() {
       return m_allvals;
     }
-    std::string completion_entry(bool skip_description) override {
+    [[nodiscard]] std::string completion_entry(bool skip_description) override {
       return BASE_ARG::completion_entry(skip_description);
     }
   protected:
@@ -66,7 +66,7 @@ class TemplateArg : public ArgBase {
       ArgBase::m_shortdoc = shortdoc;
     }
     using type = STORAGE_TYPE;
-    type& ref() {
+    [[nodiscard]] type& ref() {
       return m_storage;
     }
     FINAL_ARG* required(bool req) {
@@ -88,7 +88,7 @@ class StringArgBase : public TemplateArg<std::string, FINAL_ARG> {
     using TemplateArg<std::string, FINAL_ARG>::TemplateArg;
     virtual ~StringArgBase() {}
   protected:
-    ArgIter parse(ArgIter iter) override;
+    [[nodiscard]] ArgIter parse(ArgIter iter) override;
 };
 
 class StringArg : public StringArgBase<StringArg> {
@@ -96,7 +96,7 @@ class StringArg : public StringArgBase<StringArg> {
     using StringArgBase::StringArgBase;
     virtual ~StringArg() {}
   protected:
-    std::string completion_entry(bool skip_description) override;
+    [[nodiscard]] std::string completion_entry(bool skip_description) override;
 };
 
 class StringChoiceArg : public StringArgBase<StringChoiceArg> {
@@ -116,10 +116,10 @@ class StringChoiceArg : public StringArgBase<StringChoiceArg> {
     }
     virtual ~StringChoiceArg() {}
   protected:
-    std::string completion_entry(bool skip_description) override;
+    [[nodiscard]] std::string completion_entry(bool skip_description) override;
     std::vector<std::string> m_choices;
     std::vector<std::string> m_descriptions;
-    ArgIter parse(ArgIter iter) override ;
+    [[nodiscard]] ArgIter parse(ArgIter iter) override ;
 };
 
 class FileArg : public StringArgBase<FileArg> {
@@ -135,7 +135,7 @@ class FileArg : public StringArgBase<FileArg> {
     }
     virtual ~FileArg() {}
   protected:
-    std::string completion_entry(bool skip_description) override;
+    [[nodiscard]] std::string completion_entry(bool skip_description) override;
     std::string m_pattern;
 };
 
@@ -144,7 +144,7 @@ class DirectoryArg : public StringArgBase<DirectoryArg> {
     using StringArgBase::StringArgBase;
     virtual ~DirectoryArg() {}
   protected:
-    std::string completion_entry(bool skip_description) override;
+    [[nodiscard]] std::string completion_entry(bool skip_description) override;
 };
 
 class IntArg : public TemplateArg<int, IntArg> {
@@ -152,8 +152,8 @@ class IntArg : public TemplateArg<int, IntArg> {
     using TemplateArg<int, IntArg>::TemplateArg;
     virtual ~IntArg() {}
   protected:
-    std::string completion_entry(bool skip_description) override;
-    ArgIter parse(ArgIter) override;
+    [[nodiscard]] std::string completion_entry(bool skip_description) override;
+    [[nodiscard]] ArgIter parse(ArgIter) override;
 };
 
 // class BoolArg : public TemplateArg<bool> {
@@ -176,7 +176,7 @@ class SwitchArg : public TemplateArg<bool, SwitchArg> {
     virtual ~SwitchArg() {}
     friend Parser;
   protected:
-    std::string completion_entry(bool skip_description) override;
-    ArgIter parse(ArgIter) override;
+    [[nodiscard]] std::string completion_entry(bool skip_description) override;
+    [[nodiscard]] ArgIter parse(ArgIter) override;
     bool m_storage{false};
 };
