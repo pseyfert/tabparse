@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <initializer_list>
+#include <fmt/format.h>
 #include <string_view>
 #include <stdexcept>
 #include <type_traits>
@@ -51,6 +52,26 @@ class MultiArg : public BASE_ARG, public EndAwareArg {
     }
     [[nodiscard]] std::string completion_entry(bool skip_description) override {
       return BASE_ARG::completion_entry(skip_description);
+    }
+  protected:
+    std::vector<typename BASE_ARG::type> m_allvals;
+};
+
+template <typename BASE_ARG>
+class VectorArg : public BASE_ARG {
+  public:
+    [[nodiscard]] ArgIter parse(ArgIter iter) override {
+      iter = BASE_ARG::parse(iter);
+      m_allvals.push_back(BASE_ARG::m_storage);
+      return iter;
+    }
+    using BASE_ARG::BASE_ARG;
+    // removes TemplateArg::ref from the overload set
+    [[nodiscard]] std::vector<typename BASE_ARG::type>& ref() {
+      return m_allvals;
+    }
+    [[nodiscard]] std::string completion_entry(bool skip_description) override {
+      return fmt::format("*{}", BASE_ARG::completion_entry(skip_description));
     }
   protected:
     std::vector<typename BASE_ARG::type> m_allvals;

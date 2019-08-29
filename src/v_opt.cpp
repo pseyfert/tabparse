@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <fmt/format.h>
 #include <algorithm>
+#include <memory>
 
 ArgIter IntArg::parse(ArgIter iter) {
   m_flags.set(ArgFlags::Present);

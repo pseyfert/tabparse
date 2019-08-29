@@ -205,3 +205,11 @@ template MultiArg<IntArg>* Parser::addOther<IntArg>(std::string_view shortdoc, s
 // template MultiArg<SwitchArg>* Parser::addOther<SwitchArg>(std::string_view shortdoc, std::string_view doc);
 template MultiArg<StringChoiceArg>* Parser::addOther<StringChoiceArg>(std::string_view shortdoc, std::string_view doc, std::initializer_list<std::string>);
 template MultiArg<StringChoiceArg>* Parser::addOther<StringChoiceArg>(std::string_view shortdoc, std::string_view doc, std::initializer_list<std::string>, std::initializer_list<std::string>);
+
+template VectorArg<DirectoryArg>* Parser::addArg<VectorArg<DirectoryArg>>(std::string_view, std::string, std::string_view, std::string_view);
+template VectorArg<FileArg>* Parser::addArg<VectorArg<FileArg>>(std::string_view, std::string, std::string_view, std::string_view, std::string_view);
+template VectorArg<StringArg>* Parser::addArg<VectorArg<StringArg>>(std::string_view, std::string, std::string_view, std::string_view);
+template VectorArg<IntArg>* Parser::addArg<VectorArg<IntArg>>(std::string_view, int, std::string_view, std::string_view);
+// template VectorArg<SwitchArg>* Parser::addArg<VectorArg<SwitchArg>>(std::string_view, bool, std::string_view, std::string_view);
+template VectorArg<StringChoiceArg>* Parser::addArg<VectorArg<StringChoiceArg>>(std::string_view, std::string, std::string_view, std::string_view, std::initializer_list<std::string>);
+template VectorArg<StringChoiceArg>* Parser::addArg<VectorArg<StringChoiceArg>>(std::string_view, std::string, std::string_view, std::string_view, std::initializer_list<std::string>, std::initializer_list<std::string>);
